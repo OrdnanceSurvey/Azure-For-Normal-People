@@ -1,0 +1,301 @@
+Put in Documentation:
+talk about the instructions at the bottom of the slides
+reflective - we reflected after each and every session, making changes
+small group size
+facilitators
+workshop duration
+
+
+
+Welcome to Azure for Normal People
+
+We're delighted to know we have this many normal people in the department!
+
+I'm going to establish what this session will be about, and what it'll deliberately not be about.
+We're going to get hands-on with building a physical representation of what we deploy to the cloud, and we're going to touch on how the organisation is set up for cloud-y things.
+
+There has been a lot of change introduced to the organisation in the last couple of years. Our ongoing transition to Azure is one of those changes. But there are several other changes in play, and the lines can get blurred. I want to spend a moment calling some of them out explicitly so that we can share a common focus of this session.
+
+The move to Cloud vs On-Prem has been a big shift, though we've had teams like Engagement Services working into the Amazon Cloud for quite some time before we more widely adopted Azure. 
+Engineering for the Cloud has different areas of focus and ways of doing things: Engineering for recovery rather than reliability is a big one, as well as handling performance and scaling differently.
+
+We've also attempted to restructure the department for "Whole Life Support". That also changes they way we engineer.
+
+The move to the Cloud and the desire for Whole Life Support has accelerated our DevOps adoption. DevOps means different things to different people. To me, it means bringing some of the hard-won engineering discipline around the -ilities - repeatability, supportability, extensibility - to the Operations line of work. 
+One of the ways we do this is "accessibilty", by automating the provisioning of supporting infrastructure, and making it self-service. This automation and self-service approach empowers our engineers to do much more for themselves within team, which lets them go faster. They don't have to wait in a queue for stuff to be done for them; they can just get on with it.
+For those of you who have had the brief of IAAS, PAAS, SAAS, this is where it really comes into play. The higher up this stack a solution is architected, the more empowered developers are to get on with stuff, and the less reliant they are on operations resource.
+
+With all this change going on, some of us have used the unsettled period to push an a agenda of engineering principles. Engineering for the cloud does require different handling, and several of the tech leads, and Engineering Practice, and Common Engineering as a part of that, have shoved our oars in to try to elevate the state of our practice whilst we're all having to learn new anyway. We might as well learn the new in the right way, rather than having to relearn the right way later.
+
+We've also introduced Azure. But it's worth noting that all these sources of change are interrelated with, but not _dependant_ upon, our Azure adoption. We could have self-served our on-prem infrastructure (it would have been much more difficult). We could have encouraged our teams to become DevOps teams (there wouldn't have been much point).
+So, these are all the things we aren't going to talk about. If you would like to talk about them more, let us know. If we get demand, then we'll go into them more in another session.
+
+So, the Cloud. What is the cloud? This is the world. All over the world there are data centers owned by Microsoft. All of those servers work together to run software hides all that complexity in order to look like....
+
+A single computer.
+
+I think of Azure (or Amazon Web Services, or Google Cloud, any of those) as a big computer, and I think of computers having three main bits. Storage bits, like harddrives and memory sticks. The processing bits (the thinking bits, where we _execute_ code), like a CPU or an GPU, and the things that carry messages between those other bits.
+Most everything in Azure can be broadly lumped into one of these three categories.
+This session is going to be about what different resources in Azure can be categorised as what, and how they are arranged, and how that impacts your development teams.
+
+Before we go further and start, I want to draw your attention to the worksheets on the tables. These are for you, feel free to grab one and make notes if you like. One side shows a set up similar to (but not the same as) what we're building today, and the other shows some of the symbols for the most important resources for the OS. We'll show the model answers at the end of the session in case you miss anything.
+
+So, how do we introduce all these bits of Azure?
+Well, happily, we've got a customer that wants a product! We've won a bid! We're going to build a system in Azure that will create that product.
+We've been given some requirements:
+As a Local Authority
+I want a list of residential buildings
+So that I can use that data to make plans
+
+I will warn you that this is a bit of a contrived example: some of the details aren't wholly accurate, and some things would happen in a different order. Take it for the training exercise that it is. We're also pushing the self-provisioning idea quite hard so expect to be empowered and to get stuck in!
+
+The customer requires a service, that:
+Given a geographical area, will return a list of buildings that are classified as residential. All the interaction will happen on a webpage.
+
+We've got all the approvals, budgets, costs codes, investment requests, ARB, everything we need to get started. The first thing we need is a developer with a laptop.
+Here's mine - their name is Alex. You need one too. 
+
+>> Collect a laptop and a developer. Name your developer - we suggest a short, easy name - you'll be writing it several times!
+
+At the moment, the Alex can start working on their laptop. They are going to start writing their application. They're going to run everything on their laptop, not in the cloud, just to prove that they can do stuff. To start off with, they're just going to make a webpage to display sample data, and not hook it up to any real data yet.
+
+The green application represents the code our engineers write. 
+
+>> Collect an application and place it on the laptop
+
+Our developer is working on the application, making lots of little changes, and exploring lots of things that may or may not work. They're going to keep breaking stuff. Being afraid of experimenting with potentially breaking change can stifle productivity. Let's introduce something that keeps versions of their code so that they can roll back if they break something. We call this source control. We use git as our source control. It's an application, just like Word or Outlook is, and it runs on their laptop.
+
+>> Collect git. Place application on Git on Laptop
+
+Everything is going great. But now our Product Owner actually wants to start interacting with the software. They can't keep borrowing the developer's laptop. So, let's deploy it into Azure.
+
+Let's talk about Azure for a moment.
+
+When we start in Azure, we start with a Subscription. Subscriptions are big buckets. The way OS is set up at the moment, almost all our project work is split over 3 subscriptions, Dev, Test, and Prod. These are just names. These are just buckets. We could have chosen to have a Subscription per System. They are really just names for buckets and how we divide resources between them is largely arbitrary.
+
+>> Collect a Subscription - Give it a name - call it a breakfast food
+(Note to facilitators. We found the breakfast food prompt really effective. Without it, delegates would name the subscription "Dev" or "Prod". Those overloaded terms carry a lot of baggage, and can confuse things down the line)
+
+Subscriptions exist in Azure, in the big bad cloudy world, and already, hackers are trying to access our stuff. We need to make sure that we can get to it, and nobody else can. We need to only let Authorised users access our Subscription. For this we employ the ARM - the Azure Resource Manager. The ARM is a bit like a bouncer. It turns away anyone not authorised to access our subscription, and it decides that based on our role.
+
+People at a music festival have roles. People in the role of Festival Goer are allowed in public areas and that's it. People with a VIP role have access to backstage but not administration areas. Lighting and Sound technicians have access to the stage, but not to VIP lounges. Only site admin have access to the adminstration areas.
+
+The Azure Resource Manager has a record of who has been given roles on resources.
+In our case, the what is easy - that's our subscription. The role, for our purpose, is "Contributor". Anyone with this role can Contribute to the Subscription. And the who is our Engineer.
+
+>> Collect the ARM. Fill it in for your developer, giving them Contributor access to your Subscription
+
+Except... what is to stop someone impersonating our user? We want to grant access to Alex, but not to Evil-Alex the impersonator! We need Alex to prove he is who he says he is.
+For this, we need Authentication. Authentication means people have to prove they are who they claim to be. We most often do this with passwords. You might have come across Multi-Factor Authentication, for example with your Bank, which requires you to have more than one thing to authenticate with; say, your password AND your bank card and the dinky reader, or your password AND the code that was just texted to your mobile.
+
+We do Authorisation with Azure Active Directory. Azure Active Directory is like a book of users, sometimes arranged into groups. We're going to add our Engineer to the Active Directory, and the ARM will use the directory to authenticate any user that try to access something it protects. Do this now.
+
+>> Collect an Azure Active Directory. Write your developer's name into it.
+
+So, we now have our Subscription, protected by the ARM which Authorises users, which in turn is using Azure Active Directory to Authenticate those users.
+
+We have access to our subscription; now it's time to put something in it.
+
+Resource Groups live in a subscription. Resources are grouped together into Resource Groups. Resource Groups are logical containers. They don't cost anything. Resource Groups are intended to lump together the things that change together. They make it easy to remove everything that makes a discrete thing, but removing the Resource Group it is contained in.
+
+>> Put a resource group into your subscription
+
+So we have a subscription, a resource group, and access to them via Active Directory.
+
+Our developer has written some bare bones application code. And it's running on their laptop.
+Application code needs to sit in something that'll run it. At this point, the software on the laptop is the execution environment. But it could be a server in the data centre, or a computer running linux rather than windows. Or on a language specific runtime like the Java JVM. But for us, we want it in Azure, so we're going to create something to be the execution environment in Azure.
+
+We're going to create a WebApp. This is an execution environment that is ideal for serving up webpages, and can easily be talked to via REST, which is like sending data by visiting urls.
+
+So, let's get a WebApp and put it into our Resource Group in our Subscription in Azure. And then let's push our application code to it.
+
+>> Collect a webapp, and a small copy of the application. Put them in the resource group, with the application running _on_ the WebApp
+
+Horay! We have a webpage that we can access. Our application code is running in a WebApp, that is contained in a Resource Group, that exists in a Subscription, in Azure, and secured by Azure Active Directory.
+
+Next, we want to start providing some real data for the webpage to deploy. We're going to need some storage.
+Let's use the Table Storage offering. Tables are lightweight, responsive, fast storage options. Almost all of Height uses table storage exclusively. Table storage looks a spreadsheet.
+
+Table Storage is one part of a Resource called a Storage Account. 
+
+>> Go grab a Storage Account to store our data, and a Table Storage icon to show that's the bit we're using.
+
+Now we have a storage account, we need to connect to it.
+
+The Storage Account has a URL, like a website address, that things can use to connect to it. It's called a connection string; it's just like a postal address. We need some way of telling our application code what that connection string is.
+But that connection string is sensitive information. We shouldn't just code it in to our application - that's not secure.
+
+We need a way of storing that connection string securely, so that our application can get it. We'll use a Key Vault. Key Vaults are a secure storage mechanism that lets us store secrets that have names. We'll store our connection string in the Key Vault. Our WebApp can securely access the Key Vault to get the connection string - let's not go into how in this session!
+
+>> Collect a KeyVault and put the connection string into it
+
+So now our WebApp can access the data in the storage account, and display real data to the users.
+
+This is what you should have in front of you.
+
+Our users are thrilled, and they've commissioned us to make an improvement.
+Now our service needs to:
+Given a geographical area, return a list of building heights, for buildings that are classified as residential.
+
+For this we will need to query a data source for building height data. We'll need to introduce another bit of application code to do that, and we'll need another execution environment.
+
+This is a bigger problem. We're going to have to get some more developers involved.
+Enter our next developer, Roby.
+
+>> Collect a green developer and a laptop, name them, give them access to the subscription with the ARM, and enter them into the AAD.
+
+So far, for our little spikey project, Alex has been working on their laptop. All the code is there.
+This is really bad practice. Roby can't do anything, and if something happens to Alex's laptop, or Alex himself, we're in trouble!
+Now that Roby is on board, we need to make sure that the work is coordinated, so that they know what each other are doing, and the state of the work.
+We need somewhere for Alex and Roby to manage their collaboration on work, and to store the source code.
+
+We'll use AzureDevOps. We'll use Epics, Features, Stories, and Tasks to coordinate our work, and we'll store the source code here so that there's a central copy. Alex and Roby make changes locally on their laptops, and push the code up to the repository in AzureDevOps. From there, our second developer, who is also running git on their laptop, can pull the code down.
+
+
+>> Collect an instance of Azure DevOps. Add work items, and a copy of git.
+>> Put a copy of the application in git in DevOps, and a copy of the Application in git on the second developer's laptop
+
+Let's talk about how git is going to work for us.
+Our first developer has the application in git on their laptop. They can push a copy of the application up to git on Azure DevOps.
+
+When they change the code, they push their changes, and the other developer pulls them down.
+
+Pretty quickly Alex and Roby find that they are stepping on each other's toes. They're both trying out their changes in Azure and messing up each other's work. Roby needs their own copy of the system to play with.
+
+We need to give them isolation.
+
+We need to keep these two copies of the system apart. We keep them apart by putting them in separate environments. Environments aren't real. They are an OS construct, a construct that the Infrastructure Architects have introduced to show this separation and grouping. We need two environments. 
+
+>>Collect everything a copy of the whole system you have deploye so far. Collect environments to distingish them. Give the environments names - something to do with your developer.
+
+But two developers working on their own versions of the systems means that pretty quickly their code will drift apart. Each environment might have different "latest features". We need to bring the changes together, to make sure they are compatible. We're going to need a third integration environment. Let's call it CI.
+
+So we'd have three environments now. But wait. Our Product owner wants to see the latest version of stable code. Our CI environment might not show it; it's the integration of new code, so sometimes it might fail. We're going to need a 4th environment, for prod.
+
+>> Collect everything for another two environments.
+
+So now we have four environments. But now, if Alex makes a change to something - perhaps adding another keyvault or storage account, then Roby needs to change thier environment too. And someone needs to update CI. And someone needs to update Prod. For each and every change that comes along.
+
+This is too much manual processing, and our environments are going to get out of sync. Let's introduce some automation that will make this faster, and will keep our environments looking identical.
+
+First, we'll specify our infrastructure as code, and store it next to our application code.
+
+We do this by inventorying our infrastructure into a template for an environment.
+
+>> For each of your three applications in git, add infrastructure as code. Fill in the values for each of them.
+
+We have our infrastructure as code, and have it coupled to our application code.
+
+Now we need to deploy it repeatability to our environments.
+
+We'll set up a pipeline in AzureDevOps. This will compile and run our tests on our code in a process called Build. If all the tests pass, we'll trigger a process called Release. This will deploy both our infrastructure and our code into Azure.
+
+For a given environmnt, the pipeline will deploy each infrastructure resource, and the application code that runs on them.
+Then it repeats the process for each subsequent environment.
+
+We can then deploy our code to each of those environments, and the environments will look the same. We can even have a check to say only push to the production environment if all the tests pass in the CI environment. We can set this build to be triggered by any change to git, so we are rebuilding, redeploying, and re-promoting every code change.
+
+>> Collect build and release pipelines and add them to Azure DevOps. Fill in the environment names.
+(Note to facilitators - you can talk about manual approvals here if desired)
+
+We did all this because we had to add another developer, but now we're in a really good place! We now have a scalable solution. We can scale to as many environments as we like, and welcome more developers on to the team. Our code is continuously integrated.
+
+So let's return to the requirements that drove us here in the first place.
+With our excellent performance so far, the business has asked us to enrich our data. We want to supply the height of every residential building in a given area.
+
+We're going to have to query the Building Height Attribute System. This is a whole different area, a whole different development team, and a solution that will likely have multiple environments.
+The only environment of theirs that we are interested in is their production environment; we're their customers.
+
+>> Collect the Height Team's Azure DevOps.
+>> Add an environment for BHA and call it prod
+>> Add the little resource group
+>> Add the BHA service.
+
+Notice that the BHA service has application code, and a number of infrastructure resources that it _could_ be running on.
+
+Does anyone spot a problem? 
+We have two prod environments in our subscription - ours and theirs.
+
+We're going to have to start grouping our environments together. We need to separate the responsibilities of components in Azure. We group them into Systems. Systems is another OS construct that doesn't exist in Azure, another construct that the Infrastructure Architects have introduced in order to try to help us know what goes with what. There is also a requirement that a system have a 4 character identifier. This is a bit of a throw back to enterprise thinking, and isn't really cloud friendly. 
+(Note to facilitators: you can talk about tagging and metadata here if desired)
+
+>> Add systems, and name them.
+
+Our system is going to have to query the building heights system. That's a simple thing to do, but there are going to be quite a lot of buildings. 
+We need something that we can delegate that work to. We can write some simple application code. We're going to need an execution environment for it, one that can really handle work at that scale.
+
+A Function would be really good for this. Function apps are super-fast, super-lightweight infrastructure resources. They have limitations - they're limited to 5 minutes of runtime. But because they are super simple, they auto-scale very well. If we supply a couple of bits of work to the function, it'll do those bits of work. If we supply a ton of work, it'll grow to be a ton of instances, and they'll share the load between them.
+
+>> Add a Function App to your infrastructure as code. Make sure every copy of git gets it. When the change arrives at Azure DevOps, add a function to each environment.
+
+We'll have to have a way of sending the work to the function. We want to send each building individually to the function, so we want to parcel each building up into a message that the function can pick up when it's ready. The right tool for the job here is Queue Storage.
+
+Queue storage is kind of like a letter box. We can put as many messages as we like into the letter box and, at some point, someone will come and collect them.
+Queue storage is a service that is lumped into the Storage Account. We already have a storage account, so let's use the Queue storage part of it. Queue Storage can have multiple Queues (letter boxes), so we'll have one letter box for sending buildings, and another letter box for sending back heighted buildings.
+
+>> Add queue storage to your storage accounts, in each environment
+
+Our system looks a bit like this. Our users interact with a webpage hosted on the WebApp. They query the table with a residential area, which retrieves all the buildings within that area. 
+Each building is put in a message, and put in queue storage. A function picks up the message, queries the Building Height Service, adds the height to the building, returns the message, whereupon the heighted building is returned to the user.
+
+So now we have a system that give heights of residential buildings : )
+It's going so well and our service is being widely recognised. We've even been mentioned on the BBC. Our service is getting hammered! We'll need to scale our WebApp.
+Happily, it's really easy to give our WebApp more computing power. We'll change the config in our code, and push. This will flow through our environments, and quickly be available in Prod. Contrast that to trying to move things on our on-prem data centre, which would have required HEAT tickets, Ops involvement, pulling people off other work.
+
+>> Change the WebApp size in the infrastructure as code. Make sure to change it for all three instances.
+>> Add a bigger compute resource to the back of each WebApp.
+
+Notice that the WebApp looks no different from the front. Most people won't notice the change - it's just a bigger box behind the scenes.
+
+(Note to facilitators: this is a good time to talk about autoscaling if desired. And perhaps about environment specific config [smaller boxes for dev environments, bigger for prod etc])
+
+Once again, our customers are delighted with our offerings, and we've been asked to enhance our data yet again.
+
+This time, our customers want to know the population density in buildings.
+
+This is a bit different. We don't have that data. The ONS has agreed to supply the data to us. It'll be a compressed file that they'll supply once a quarter, and we'll have to unpack it.
+
+This is an entirely different responsibility. It's going to be an entirely different system.
+You can sit back and watch for the next bit - we won't make you build it!
+
+The ONS is going to load data for us. We need to give them somewhere to put it. We need some storage that will accept big files, and not really care about what they are.
+Let's use Blob Storage. Blob Storage is another Storage Account offering, which takes large files and stores them. Just like you can share links to files in OneDrive or Sharepoint, you can share links to files held in Blob containers, or to the container itself if you want people to be able to write to it.
+
+We can write some code to run in a function or a webapp that will decompress that file, and put it into table storage. That will likely run on a WebApp or Function.
+
+But we need a way of knowing when the ONS have uploaded a file. Event Grids are good for this. Event Grids notice status changes in Azure, and will send those events to whoever is listening out for them. We'll introduce an Event Grid, and use it to trigger the processor whenever a new file is updated. The processor will unpack the data, get it into the shape we want it.
+
+We'll need somewhere to store the data. Let's use Table storage.
+
+If we let our customers query our data storage directly, then every time we change the table, by adding or removing a column for example, all our customers will have to change their code.
+Let's put a WebApp in front of our table storage. Our customers can query that, and the WebApi can translate the response into the format the customers are expecting, and that will insulate them from changes.
+
+We can update our own functions to query for population data of buildings, and we can derive population density metrics from that.
+
+But really quickly after doing that, we find that the performance of table storage isn't up to the input and query demands of the ONS population data. No matter. We'll bring in Table Storage's more expensive big brother, Cosmos DB. Cosmos looks really really similar to Table Storage, but it performs better. Good engineering in our systems means it's very easy to switch our code over.
+
+Because we keep this WebApi the same, our functions don't notice that the underlying infrastructure for the data store has changed.
+
+It's going great, and the customer demand for our population density data is huge. So much so that we can't scale the WebApp up any more. What we can do, like the functions, is scale out the WebApp by adding more instances.
+
+So, that's our system in Azure.
+
+What have we missed?
+* Storage things
+* Thinking things (execution environments)
+* Messaging things
+
+
+What does this mean to me?
+Your developers need you!
+Working in the cloud has just removed the distinction between what was infrastructure and what was application. They are all now just code!
+
+There are many new concepts for Development teams to learn, and a multitude of new options available.
+They need time and space built into projects in order to learn the new stuff.
+There is a great amount of fear in the department, as the world is changing. We need to acknowledge that fear and support people.
+The temptation is to fall back to the traditional mindset of developers write code and IT manage infrastructure, particuarly when project pressures increase.
+Common engineering is about changing that culture so we’re here to support development teams learn how to become cross-functional teams capable of developing and operating their cloud applications.
+
+Teams will need your help to create the project and team environments where space is made for learning and teams don’t just create single points of failure.
+DevOps, infrastructure, support are not job roles for individuals in your teams they are team responsibilities, culture and practices. 
+We need you to insist on it
