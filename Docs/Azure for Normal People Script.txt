@@ -1,13 +1,4 @@
-Put in Documentation:
-talk about the instructions at the bottom of the slides
-reflective - we reflected after each and every session, making changes
-small group size
-facilitators
-workshop duration
-
-
-
-Welcome to Azure for Normal People
+﻿Welcome to Azure for Normal People
 
 We're delighted to know we have this many normal people in the department!
 
